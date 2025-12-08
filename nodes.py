@@ -105,14 +105,10 @@ class Example:
     #def IS_CHANGED(s, image, string_field, int_field, float_field, print_to_screen):
     #    return ""
 
-
-# A dictionary that contains all nodes you want to export with their names
-# NOTE: names should be globally unique
 NODE_CLASS_MAPPINGS = {
-    "Example": Example
+    "YuGiOhCardGenerator": YuGiOhCardGenerator
 }
 
-# A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Example": "Example Node"
+    "YuGiOhCardGenerator": "Yu-Gi-Oh! Card Generator"
 }
