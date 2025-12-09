@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import textwrap
 import re
+import os
 
 class YuGiOhCardGenerator:
     """
@@ -19,19 +20,18 @@ class YuGiOhCardGenerator:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "required": {
-                "card_frame": ("IMAGE",),      # The background template
-                "card_art": ("IMAGE",),        # The main monster image
-                "attribute_icon": ("IMAGE",),  # The attribute symbol (Top Right)
-                "star_icon": ("IMAGE",),       # A single star image
-                "title_text": ("STRING", {"default": "Dark Magician", "multiline": False}),
-                "level_count": ("INT", {"default": 7, "min": 0, "max": 12}),
-                "race_type_text": ("STRING", {"default": "[ Spellcaster / Normal ]", "multiline": False}),
-                "description_text": ("STRING", {"default": "The ultimate wizard in terms of attack and defense.", "multiline": True}),
+            "optional": {
+                "title_color": ("STRING", {"default": "#FFFFFF", "multiline": False}),
+                "frame": (["effect", "spell"],),
+                "art": ("IMAGE",),
+                "attribute": (["none", "dark", "light", "earth", "wind", "water", "fire", "spell", "trap", "divine"],),
+                "name": ("STRING", {"default": "Dark Magician", "multiline": False}),
+                "level_rank": ("INT", {"default": 7, "min": 0, "max": 12}),
+                "type": ("STRING", {"default": "[ Spellcaster / Normal ]", "multiline": False}),
+                "effect": ("STRING", {"default": "The ultimate wizard in terms of attack and defense.", "multiline": True}),
                 "atk_value": ("STRING", {"default": "2500"}),
                 "def_value": ("STRING", {"default": "2100"}),
-                "font_path": ("STRING", {"default": "arial.ttf"}), # Path to a .ttf file
-            },
+            }
         }
 
     RETURN_TYPES = ("IMAGE",)
@@ -45,22 +45,50 @@ class YuGiOhCardGenerator:
     def pil_to_tensor(self, image):
         return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
-    def generate_card(self, card_frame, card_art, attribute_icon, star_icon, title_text, level_count, race_type_text, description_text, atk_value, def_value, font_path):
+    def generate_card(self, frame, art, attribute, name, level_rank, type, effect, atk_value, def_value, title_color="#FFFFFF"):
         
         # 1. Convert Input Tensors to PIL Images
-        base_img = self.tensor_to_pil(card_frame[0]) if card_frame.ndim > 3 else self.tensor_to_pil(card_frame)
-        art_img = self.tensor_to_pil(card_art[0]) if card_art.ndim > 3 else self.tensor_to_pil(card_art)
-        attr_img = self.tensor_to_pil(attribute_icon[0]) if attribute_icon.ndim > 3 else self.tensor_to_pil(attribute_icon)
-        star_img = self.tensor_to_pil(star_icon[0]) if star_icon.ndim > 3 else self.tensor_to_pil(star_icon)
+        if isinstance(frame, str):
+            frame_map = {
+                "effect": "asset/image/frame/effect-s9.png",
+                "spell": "asset/image/frame/spell-s11.png"
+            }
+            img_path = os.path.join(os.path.dirname(__file__), frame_map.get(frame, "asset/image/frame/effect-s9.png"))
+            base_img = Image.open(img_path).convert("RGBA")
+        else:
+            base_img = self.tensor_to_pil(frame[0]) if frame.ndim > 3 else self.tensor_to_pil(frame)
+        art_img = self.tensor_to_pil(art[0]) if art.ndim > 3 else self.tensor_to_pil(art)
+        if isinstance(attribute, str):
+            if attribute == "none":
+                 attr_img = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+            else:
+                attr_map = {
+                    "dark": "asset/image/attribute/dark-cn.png",
+                    "light": "asset/image/attribute/light-cn.png",
+                    "trap": "asset/image/attribute/trap-cn.png",
+                    "spell": "asset/image/attribute/spell-cn.png",
+                    "earth": "asset/image/attribute/earth-cn.png",
+                    "wind": "asset/image/attribute/wind-cn.png",
+                    "water": "asset/image/attribute/water-cn.png",
+                    "fire": "asset/image/attribute/fire-cn.png",
+                    "divine": "asset/image/attribute/divine-cn.png"
+                }
+                attr_path = os.path.join(os.path.dirname(__file__), attr_map.get(attribute))
+                attr_img = Image.open(attr_path).convert("RGBA")
+        else:
+            attr_img = self.tensor_to_pil(attribute[0]) if attribute.ndim > 3 else self.tensor_to_pil(attribute)
+        # Hardcoded star icon loading
+        star_path = os.path.join(os.path.dirname(__file__), "asset/image/star/level.png")
+        star_img = Image.open(star_path).convert("RGBA")
 
         W, H = base_img.size
         
         # --- CONFIGURATION ---
         ART_X, ART_Y = 0.125, 0.21
         ART_W, ART_H = 0.75, 0.50
-        TITLE_X, TITLE_Y = 0.06, 0.045
+        TITLE_X, TITLE_Y = 0.05, 0.035
         TITLE_MAX_W = 0.78
-        TITLE_FONT_SIZE_RATIO = 0.07
+        TITLE_FONT_SIZE_RATIO = 0.08  # Increased from 0.07
         ATTR_X, ATTR_Y = 0.84, 0.038
         ATTR_SIZE_RATIO = 0.11
         STAR_Y = 0.155
@@ -68,15 +96,16 @@ class YuGiOhCardGenerator:
         STAR_SPACING = 0.065
         TYPE_X, TYPE_Y = 0.06, 0.81
         TYPE_FONT_SIZE_RATIO = 0.035
-        DESC_X, DESC_Y = 0.065, 0.845
-        DESC_W, DESC_H = 0.87, 0.11
-        DESC_FONT_SIZE_RATIO = 0.03
+        DESC_X, DESC_Y = 0.065, 0.825 # Moved up slightly to give more room if needed
+        DESC_W, DESC_H = 0.87, 0.14  # Increased height from 0.11
+        DESC_FONT_SIZE_RATIO = 0.045 # Increased from 0.03
         STATS_Y = 0.94
         ATK_X, DEF_X = 0.65, 0.85
         STATS_FONT_SIZE_RATIO = 0.035
         
         # Helper to load font
-        def get_font(size):
+        def get_font(size, font_name="MatrixBook.ttf"):
+            font_path = os.path.join(os.path.dirname(__file__), f"asset/font/{font_name}")
             try:
                 return ImageFont.truetype(font_path, size=int(size))
             except IOError:
@@ -98,39 +127,57 @@ class YuGiOhCardGenerator:
         base_img.paste(attr_resized, (int(W * ATTR_X), int(H * ATTR_Y)), mask)
 
         # 4. Composite Stars
-        if level_count > 0:
+        if level_rank > 0:
             target_star_size = int(W * STAR_SIZE_RATIO)
             star_resized = star_img.resize((target_star_size, target_star_size), Image.Resampling.LANCZOS)
             star_mask = star_resized if star_resized.mode == 'RGBA' else None
-            total_star_width = (level_count - 1) * (W * STAR_SPACING)
+            total_star_width = (level_rank - 1) * (W * STAR_SPACING)
             start_x = (W / 2) - (total_star_width / 2) - (target_star_size / 2)
-            for i in range(level_count):
+            for i in range(level_rank):
                 x_pos = int(start_x + (i * W * STAR_SPACING))
                 y_pos = int(H * STAR_Y)
                 base_img.paste(star_resized, (x_pos, y_pos), star_mask)
 
         # 5. Draw Title
         title_font_size = int(H * TITLE_FONT_SIZE_RATIO)
-        title_font = get_font(title_font_size)
-        left, top, right, bottom = draw.textbbox((0, 0), title_text, font=title_font)
+        title_font = get_font(title_font_size, "MatrixBoldSmallCaps.otf")
+        left, top, right, bottom = draw.textbbox((0, 0), name, font=title_font)
         text_w = right - left
         text_h = bottom - top
         max_title_w = int(W * TITLE_MAX_W)
         title_layer = Image.new('RGBA', (text_w, int(text_h * 1.5)), (0,0,0,0))
         title_draw = ImageDraw.Draw(title_layer)
-        title_draw.text((0, 0), title_text, font=title_font, fill=(0, 0, 0, 255))
+        title_draw.text((0, 0), name, font=title_font, fill=title_color)
         if text_w > max_title_w:
             title_layer = title_layer.resize((max_title_w, int(title_layer.height)), Image.Resampling.LANCZOS)
         base_img.paste(title_layer, (int(W * TITLE_X), int(H * TITLE_Y)), title_layer)
 
         # 6. Draw Race / Type
-        type_font = get_font(int(H * TYPE_FONT_SIZE_RATIO))
-        draw.text((int(W * TYPE_X), int(H * TYPE_Y)), race_type_text, font=type_font, fill=(0,0,0))
+        if frame == "spell":
+            type_text = f"[ {type} ]"
+            # Use specific font for spell format
+            type_font = get_font(int(H * TYPE_FONT_SIZE_RATIO * 1.5), "YuGiOhITCStoneSerifBSc.ttf") 
+            # Right align at top right
+            t_left, t_top, t_right, t_bottom = draw.textbbox((0, 0), type_text, font=type_font)
+            t_width = t_right - t_left
+            # Position: Right-aligned near Attribute (X approx 0.82 relative to canvas width?)
+            # The reference shows it effectively right aligned with the title bar end roughly.
+            # Let's place it at roughly X=0.88 - text_width
+            # And Y position just below the top header or aligned with it?
+            # In anime style, it is often just below the main header line.
+            # Let's approximate Y = 0.125
+            spell_type_x = int(W * 0.88) - t_width
+            spell_type_y = int(H * 0.128)
+            draw.text((spell_type_x, spell_type_y), type_text, font=type_font, fill=(0,0,0))
+        else:
+            type_font = get_font(int(H * TYPE_FONT_SIZE_RATIO))
+            draw.text((int(W * TYPE_X), int(H * TYPE_Y)), type, font=type_font, fill=(0,0,0))
 
         # 7. Draw Stats
-        stats_font = get_font(int(H * STATS_FONT_SIZE_RATIO))
-        draw.text((int(W * ATK_X), int(H * STATS_Y)), str(atk_value), font=stats_font, fill=(0,0,0))
-        draw.text((int(W * DEF_X), int(H * STATS_Y)), str(def_value), font=stats_font, fill=(0,0,0))
+        if frame != "spell": # Spells don't have ATK/DEF typically
+             stats_font = get_font(int(H * STATS_FONT_SIZE_RATIO))
+             draw.text((int(W * ATK_X), int(H * STATS_Y)), str(atk_value), font=stats_font, fill=(0,0,0))
+             draw.text((int(W * DEF_X), int(H * STATS_Y)), str(def_value), font=stats_font, fill=(0,0,0))
 
         # 8. Draw Description (Advanced Typesetting)
         desc_x = int(W * DESC_X)
@@ -218,7 +265,7 @@ class YuGiOhCardGenerator:
         final_font = None
         line_height_px = 0
         
-        tokens = parse_description(description_text)
+        tokens = parse_description(effect)
         
         while current_font_size >= min_font_size:
             temp_font = get_font(current_font_size)
