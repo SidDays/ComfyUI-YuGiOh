@@ -82,8 +82,28 @@ class YuGiOhCardGenerator:
         star_img = Image.open(star_path).convert("RGBA")
 
         W, H = base_img.size
+        W_EXPECTED, H_EXPECTED = 813, 1185
+        W_RATIO = W / W_EXPECTED
+        H_RATIO = H / H_EXPECTED
         
         # --- CONFIGURATION ---
+        CONFIGURATION = {
+            "series_9": {
+                "art": {
+                    "x": 0.125,
+                    "y": 0.21,
+                    "w": 0.75,
+                    "h": 0.50
+                },
+                "title": {
+                    "x": 62,
+                    "y": 64,
+                    "w": 607,
+                    "h": 60,
+                    "font_size": 72
+                }
+            }
+        }
         ART_X, ART_Y = 0.125, 0.21
         ART_W, ART_H = 0.75, 0.50
         TITLE_X, TITLE_Y = 0.05, 0.035
@@ -139,8 +159,8 @@ class YuGiOhCardGenerator:
                 base_img.paste(star_resized, (x_pos, y_pos), star_mask)
 
         # 5. Draw Title
-        title_font_size = int(H * TITLE_FONT_SIZE_RATIO)
-        title_font = get_font(title_font_size, "MatrixBoldSmallCaps.otf")
+        title_font_size = int(CONFIGURATION["series_9"]["title"]["font_size"])
+        title_font = get_font(title_font_size, "MatrixSmallCaps.otf")
         left, top, right, bottom = draw.textbbox((0, 0), name, font=title_font)
         text_w = right - left
         text_h = bottom - top
@@ -150,7 +170,7 @@ class YuGiOhCardGenerator:
         title_draw.text((0, 0), name, font=title_font, fill=title_color)
         if text_w > max_title_w:
             title_layer = title_layer.resize((max_title_w, int(title_layer.height)), Image.Resampling.LANCZOS)
-        base_img.paste(title_layer, (int(W * TITLE_X), int(H * TITLE_Y)), title_layer)
+        base_img.paste(title_layer, (int(W_RATIO * CONFIGURATION["series_9"]["title"]["x"]), int(H_RATIO * CONFIGURATION["series_9"]["title"]["y"])), title_layer)
 
         # 6. Draw Race / Type
         if frame == "spell":
