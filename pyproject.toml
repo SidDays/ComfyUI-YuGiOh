@@ -3,9 +3,9 @@ requires = ["setuptools>=70.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "siddays_yu_gi_oh_nodepack"
+name = "ComfyUI-YuGiOh"
 version = "0.0.1"
-description = "A collection of custom nodes for ComfyUI"
+description = "Custom ComfyUI nodes to help with creating custom Yu-Gi-Oh! cards and modding the video games"
 authors = [
   {name = "Siddhesh Rajiv Karekar", email = "siddhesh.r.karekar@gmail.com"}
 ]
@@ -30,9 +30,9 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/SidDays/siddays_yu_gi_oh_nodepack"
-BugTracker = "https://github.com/SidDays/siddays_yu_gi_oh_nodepack/issues"
-Documentation = "https://github.com/SidDays/siddays_yu_gi_oh_nodepack/wiki"
+Repository = "https://github.com/SidDays/ComfyUI-YuGiOh"
+BugTracker = "https://github.com/SidDays/ComfyUI-YuGiOh/issues"
+Documentation = "https://github.com/SidDays/ComfyUI-YuGiOh/wiki"
 
 
 [tool.comfy]
@@ -40,7 +40,7 @@ PublisherId = "SidDays"
 DisplayName = "SidDays Yu-Gi-Oh! Nodepack"
 Icon = ""
 Tags = []
-Repository = "https://github.com/SidDays/siddays_yu_gi_oh_nodepack"
+Repository = "https://github.com/SidDays/ComfyUI-YuGiOh"
 
 includes = []
 
