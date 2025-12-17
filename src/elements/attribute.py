@@ -1,7 +1,7 @@
 from PIL import Image
 from .base_element import CardElement
 from ..utils import tensor_to_pil, load_image
-from ..config import ATTRIBUTE_MAP, ATTR_X, ATTR_Y, ATTR_SIZE_RATIO
+from ..config import ATTRIBUTE_MAP, EXPECTED_WIDTH, LAYOUT_CONFIG
 
 class AttributeElement(CardElement):
     def __init__(self, attribute_input):
@@ -9,7 +9,12 @@ class AttributeElement(CardElement):
 
     def draw(self, image: Image.Image, draw):
         W, H = image.size
-        
+        ratio = W / EXPECTED_WIDTH
+        layout = LAYOUT_CONFIG["series_9"]
+        ATTR_X = layout["attribute"]["x"] * ratio 
+        ATTR_Y = layout["attribute"]["y"] * ratio
+        ATTR_SIZE = layout["attribute"]["size"] * ratio
+
         # Resolve attribute image
         if isinstance(self.attribute, str):
             if self.attribute == "none":
@@ -27,8 +32,8 @@ class AttributeElement(CardElement):
             else:
                 attr_img = tensor_to_pil(self.attribute)
 
-        target_attr_size = int(W * ATTR_SIZE_RATIO)
+        target_attr_size = int(ATTR_SIZE)
         attr_resized = attr_img.resize((target_attr_size, target_attr_size), Image.Resampling.LANCZOS)
         
         mask = attr_resized if attr_resized.mode == 'RGBA' else None
-        image.paste(attr_resized, (int(W * ATTR_X), int(H * ATTR_Y)), mask)
+        image.paste(attr_resized, (int(ATTR_X), int(ATTR_Y)), mask)

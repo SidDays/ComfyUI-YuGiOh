@@ -17,6 +17,11 @@ LAYOUT_CONFIG = {
             "h": 60,
             "font_size": 78
         },
+        "attribute": {
+            "x": 680,
+            "y": 57,
+            "size": 72
+        },
         "spell_trap_type": {
             "x": 733,
             "y": 146,
@@ -61,11 +66,6 @@ TITLE_X = 0.05
 TITLE_Y = 0.035
 TITLE_MAX_W = 0.78
 TITLE_FONT_SIZE_RATIO = 0.08
-
-# Attribute
-ATTR_X = 0.84
-ATTR_Y = 0.038
-ATTR_SIZE_RATIO = 0.11
 
 # Stars / Level
 STAR_Y = 0.155
