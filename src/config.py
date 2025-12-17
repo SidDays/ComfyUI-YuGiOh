@@ -5,10 +5,10 @@
 LAYOUT_CONFIG = {
     "series_9": {
         "art": {
-            "x": 0.125,
-            "y": 0.21,
-            "w": 0.75,
-            "h": 0.50
+            "x": 100,
+            "y": 219,
+            "w": 614,
+            "h": 614
         },
         "title": {
             "x": 60,
@@ -55,12 +55,6 @@ EXPECTED_WIDTH = 813
 EXPECTED_HEIGHT = 1185
 
 # Normalized Coordinates (0.0 to 1.0 based on canvas size)
-
-# Art
-ART_X = 0.125
-ART_Y = 0.21
-ART_W = 0.75 # Used for sizing
-ART_H = 0.50 # Used for sizing
 
 # Title
 TITLE_X = 0.05
