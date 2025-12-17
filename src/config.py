@@ -2,7 +2,6 @@
 # Card Layout Configuration
 
 # Main Configuration Dictionary
-# This mirrors the structure found in the original code
 LAYOUT_CONFIG = {
     "series_9": {
         "art": {
@@ -12,11 +11,21 @@ LAYOUT_CONFIG = {
             "h": 0.50
         },
         "title": {
-            "x": 62,
-            "y": 64,
+            "x": 60,
+            "y": 69,
             "w": 607,
             "h": 60,
-            "font_size": 72
+            "font_size": 78
+        },
+        "spell_trap_type": {
+            "x": 733,
+            "y": 146,
+            "font_size": 43
+        },
+        "monster_type": {
+            "x": 49,
+            "y": 962,
+            "font_size": 41
         }
     }
 }
@@ -68,15 +77,6 @@ ATTR_SIZE_RATIO = 0.11
 STAR_Y = 0.155
 STAR_SIZE_RATIO = 0.065
 STAR_SPACING = 0.065
-
-# Type (Race)
-TYPE_X = 0.06
-TYPE_Y = 0.81
-TYPE_FONT_SIZE_RATIO = 0.035
-
-# Spell Type specific
-SPELL_TYPE_X_REF = 0.88 # Reference right alignment point
-SPELL_TYPE_Y = 0.128
 
 # Description / Effect
 DESC_X = 0.065
