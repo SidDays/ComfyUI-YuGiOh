@@ -5,7 +5,7 @@ from .elements.artwork import ArtworkElement
 from .elements.attribute import AttributeElement
 from .elements.level import LevelElement
 from .elements.title import TitleElement
-from .elements.type_info import TypeElement
+from .elements.type_info import TypeInfoElement
 from .elements.stats import StatsElement
 from .elements.effect import EffectElement
 
@@ -26,7 +26,7 @@ def generate_yugioh_card_image(frame, art, attribute, name, level_rank, type, ef
         AttributeElement(attribute),
         # LevelElement(level_rank),
         TitleElement(name, title_color),
-        TypeElement(type, frame), # Uses frame type for logic
+        TypeInfoElement(type, frame), # Uses frame type for logic
         # StatsElement(atk_value, def_value, frame),
         # EffectElement(effect)
     ]

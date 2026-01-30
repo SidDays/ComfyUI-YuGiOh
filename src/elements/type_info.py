@@ -3,7 +3,7 @@ from .base_element import CardElement
 from ..utils import get_font
 from ..config import LAYOUT_CONFIG, EXPECTED_WIDTH, EXPECTED_HEIGHT
 
-class TypeElement(CardElement):
+class TypeInfoElement(CardElement):
     def __init__(self, type_text, frame_type):
         self.type_text = type_text
         self.frame_type = frame_type
