@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, TITLE_MAX_W, LAYOUT_CONFIG
+from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, LAYOUT_CONFIG
 
 class TitleElement(CardElement):
     def __init__(self, name, title_color="#FFFFFF"):
@@ -18,7 +18,7 @@ class TitleElement(CardElement):
         text_w = right - left
         text_h = bottom - top
         
-        max_title_w = int(W * TITLE_MAX_W)
+        max_title_w = LAYOUT_CONFIG["series_9"]["title"]["w"]
         
         # Draw onto a separate layer to allow resizing
         # Create a layer with the exact text dimensions.
