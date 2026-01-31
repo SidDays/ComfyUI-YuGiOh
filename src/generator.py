@@ -24,7 +24,7 @@ def generate_yugioh_card_image(frame, art, attribute, name, level_rank, type, ef
     elements = [
         ArtworkElement(art),
         AttributeElement(attribute),
-        # LevelElement(level_rank),
+        LevelElement(level_rank),
         TitleElement(name, title_color),
         TypeInfoElement(type, frame), # Uses frame type for logic
         # StatsElement(atk_value, def_value, frame),
