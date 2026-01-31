@@ -1,13 +1,9 @@
 from .src.generator import generate_yugioh_card_image
-from .src.config import ATTRIBUTE_MAP, FRAME_MAP
+from .src.config import ATTRIBUTE_MAP, FRAME_MAP, ICONS_MAP, LAYOUTS
 
 class YuGiOhCardGenerator:
     """
     A custom node for ComfyUI to generate Yu-Gi-Oh style cards.
-    Supports advanced formatting:
-    - [Text]: Force line, compress if too long.
-    - [[Text]]: Force line, justify (spread) to fill width.
-    - {Text}: Non-breaking text (treat as one word).
     """
     
     def __init__(self):
@@ -17,16 +13,23 @@ class YuGiOhCardGenerator:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "title_color": ("STRING", {"default": "#FFFFFF", "multiline": False}),
-                "frame": (list(FRAME_MAP.keys()),),
-                "art": ("IMAGE",),
+                "series": (LAYOUTS, {"default": LAYOUTS[0]}),
+                "frame": (list(FRAME_MAP.keys()), {"default": "effect"}),
+                "name": ("STRING", {"default": "My Custom Card", "multiline": False}),
                 "attribute": (list(ATTRIBUTE_MAP.keys()),),
-                "name": ("STRING", {"default": "Dark Magician", "multiline": False}),
-                "level_rank": ("INT", {"default": 7, "min": 0, "max": 12}),
                 "type": ("STRING", {"default": "[ Spellcaster / Normal ]", "multiline": False}),
+                "icon": (list(ICONS_MAP.keys()), list(ICONS_MAP.keys())[0]),
+                "level_rank": ("INT", {"default": 7, "min": 0, "max": 12}),
+                "art": ("IMAGE",),
                 "effect": ("STRING", {"default": "The ultimate wizard in terms of attack and defense.", "multiline": True}),
                 "atk_value": ("STRING", {"default": "2500"}),
                 "def_value": ("STRING", {"default": "2100"}),
+                "link_rating": ("STRING", {"default": "auto"}),
+                "link_markers": ("STRING", {"default": ""}),
+                "is_pendulum": ("BOOLEAN", {"default": False}),
+                "pendulum_scale_blue": ("STRING", {"default": ""}),
+                "pendulum_scale_red": ("STRING", {"default": "auto"}),
+                "json_input": ("STRING", {"default": "{}", "multiline": True}),
             }
         }
 
@@ -35,8 +38,8 @@ class YuGiOhCardGenerator:
     FUNCTION = "generate_card"
     CATEGORY = "Yu-Gi-Oh!"
 
-    def generate_card(self, frame, art, attribute, name, level_rank, type, effect, atk_value, def_value, title_color="#FFFFFF"):
-        return generate_yugioh_card_image(frame, art, attribute, name, level_rank, type, effect, atk_value, def_value, title_color)
+    def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input):
+        return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input)
 
 NODE_CLASS_MAPPINGS = {
     "YuGiOhCardGenerator": YuGiOhCardGenerator

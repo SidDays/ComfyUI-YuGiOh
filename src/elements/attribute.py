@@ -1,7 +1,7 @@
 from PIL import Image
 from .base_element import CardElement
 from ..utils import tensor_to_pil, load_image
-from ..config import ATTRIBUTE_MAP, EXPECTED_WIDTH, LAYOUT_CONFIG
+from ..config import ATTRIBUTE_MAP, EXPECTED_WIDTH, getLayoutConfig
 
 class AttributeElement(CardElement):
     def __init__(self, attribute_input):
@@ -10,10 +10,10 @@ class AttributeElement(CardElement):
     def draw(self, image: Image.Image, draw):
         W, H = image.size
         ratio = W / EXPECTED_WIDTH
-        layout = LAYOUT_CONFIG["series_9"]
-        ATTR_X = layout["attribute"]["x"] * ratio 
-        ATTR_Y = layout["attribute"]["y"] * ratio
-        ATTR_SIZE = layout["attribute"]["size"] * ratio
+        layout = getLayoutConfig("series_10", "attribute")
+        ATTR_X = layout["x"] * ratio 
+        ATTR_Y = layout["y"] * ratio
+        ATTR_SIZE = layout["size"] * ratio
 
         # Resolve attribute image
         if isinstance(self.attribute, str):
