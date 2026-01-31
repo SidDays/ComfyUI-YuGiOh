@@ -22,13 +22,22 @@ def generate_yugioh_card_image(frame, art, attribute, name, level_rank, type, ef
     
     # 2. Draw Elements sequentially
     elements = [
-        ArtworkElement(art),
-        AttributeElement(attribute),
-        LevelElement(level_rank),
         TitleElement(name, title_color, attribute),
-        TypeInfoElement(type, frame), # Uses frame type for logic
-        # StatsElement(atk_value, def_value, frame),
+        AttributeElement(attribute),
+        TypeInfoElement(type, frame),
+        # IconElement(icon),
+        LevelElement(level_rank),
+        ArtworkElement(art),
+        # PendulumScalesElement(pendulum_scale_blue, pendulum_scale_red, frame),
+        # LinkMarkersElement(link_markers, frame),
+        # CornerTextElement(corner_text)
+        # SetIdElement(set_id)
         # EffectElement(effect)
+        # StatsElement(atk_value, def_value, frame),
+        # PasswordElement(password)
+        # EditionElement(edition)
+        # CopyrightElement(copyright)
+        # StickerElement(sticker)
     ]
     
     for element in elements:
