@@ -1,4 +1,5 @@
 from .src.generator import generate_yugioh_card_image
+from .src.config import FRAME_MAP
 
 class YuGiOhCardGenerator:
     """
@@ -17,7 +18,7 @@ class YuGiOhCardGenerator:
         return {
             "optional": {
                 "title_color": ("STRING", {"default": "#FFFFFF", "multiline": False}),
-                "frame": (["effect", "spell"],),
+                "frame": (list(FRAME_MAP.keys()),),
                 "art": ("IMAGE",),
                 "attribute": (["none", "dark", "light", "earth", "wind", "water", "fire", "spell", "trap", "divine"],),
                 "name": ("STRING", {"default": "Dark Magician", "multiline": False}),

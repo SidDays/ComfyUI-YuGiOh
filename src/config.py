@@ -43,8 +43,17 @@ LAYOUT_CONFIG = {
 
 # Image Maps
 FRAME_MAP = {
-    "effect": "asset/image/frame/effect-s11.png",
-    "spell": "asset/image/frame/spell-s11.png"
+    "darksynchro": "asset/image/frame/series-10/darksynchro.png",
+    "effect": "asset/image/frame/series-10/effect.png",
+    "fusion": "asset/image/frame/series-10/fusion.png",
+    "link": "asset/image/frame/series-10/link.png",
+    "normal": "asset/image/frame/series-10/normal.png",
+    "ritual": "asset/image/frame/series-10/ritual.png",
+    "spell": "asset/image/frame/series-10/spell.png",
+    "synchro": "asset/image/frame/series-10/synchro.png",
+    "token": "asset/image/frame/series-10/token.png",
+    "trap": "asset/image/frame/series-10/trap.png",
+    "xyz": "asset/image/frame/series-10/xyz.png"
 }
 
 ATTRIBUTE_MAP = {
