@@ -4,9 +4,11 @@ from ..utils import get_font
 from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, LAYOUT_CONFIG
 
 class TitleElement(CardElement):
-    def __init__(self, name, title_color="#FFFFFF", attribute="none"):
+    def __init__(self, name, title_color="", attribute="none"):
         self.name = name
         self.title_color = title_color
+        if len(self.title_color) == 0:
+            self.title_color = "black" 
         self.attribute = attribute
 
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
