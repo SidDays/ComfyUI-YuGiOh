@@ -9,20 +9,17 @@ from .elements.type_info import TypeInfoElement
 from .elements.stats import StatsElement
 from .elements.effect import EffectElement
 
-def generate_yugioh_card_image(frame, art, attribute, name, level_rank, type, effect, atk_value, def_value, title_color):
+def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input):
     """
     Core logic to generate a Yu-Gi-Oh card image.
     Returns a Tensor as expected by ComfyUI.
     """
-    # 1. Initialize Base Image (Frame)
     base_img = get_card_base_image(frame)
     
-    # Create Draw Object
     draw = ImageDraw.Draw(base_img)
     
-    # 2. Draw Elements sequentially
     elements = [
-        TitleElement(name, title_color, attribute),
+        TitleElement(name, attribute),
         AttributeElement(attribute),
         TypeInfoElement(type, frame),
         # IconElement(icon),

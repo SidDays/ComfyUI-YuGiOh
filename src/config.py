@@ -1,9 +1,16 @@
+from typing import Literal, List
 
 # Card Layout Configuration
 
+SeriesName = Literal["series_10"]
+
+LAYOUTS: List[SeriesName] = [
+    "series_10",
+]
+
 # Main Configuration Dictionary
 LAYOUT_CONFIG = {
-    "series_9": {
+    "series_10": {
         "art": {
             "x": 100,
             "y": 219,
@@ -33,7 +40,7 @@ LAYOUT_CONFIG = {
             "y": 962,
             "font_size": 41
         },
-        "level_stars": {
+        "level_rank": {
             "anchor_x": 729,
             "anchor_y": 145,
             "star_size": 49,
@@ -41,6 +48,9 @@ LAYOUT_CONFIG = {
         },
     }
 }
+
+def getLayoutConfig(series_name: SeriesName, element_name):
+    return LAYOUT_CONFIG[series_name][element_name]
 
 # Image Maps
 FRAME_MAP = {
@@ -68,6 +78,16 @@ ATTRIBUTE_MAP = {
     "water": "asset/image/attribute/cn/water.png",
     "fire": "asset/image/attribute/cn/fire.png",
     "divine": "asset/image/attribute/cn/divine.png"
+}
+
+ICONS_MAP = {
+    "none": "",
+    "continuous": "asset/image/icon/continuous.png",
+    "equip": "asset/image/icon/equip.png",
+    "field": "asset/image/icon/field.png",
+    "quick-play": "asset/image/icon/quick-play.png",
+    "ritual": "asset/image/icon/ritual.png",
+    "counter": "asset/image/icon/counter.png",
 }
 
 STAR_PATH = "asset/image/star/level.png"

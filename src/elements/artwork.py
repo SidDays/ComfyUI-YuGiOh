@@ -1,7 +1,7 @@
 from PIL import Image
 from .base_element import CardElement
 from ..utils import tensor_to_pil
-from ..config import LAYOUT_CONFIG, EXPECTED_WIDTH
+from ..config import getLayoutConfig, EXPECTED_WIDTH
 
 class ArtworkElement(CardElement):
     def __init__(self, art_input):
@@ -17,11 +17,12 @@ class ArtworkElement(CardElement):
         else:
             art_img = tensor_to_pil(self.art_input)
 
-        target_art_w = int(ratio * LAYOUT_CONFIG["series_9"]["art"]["w"])
-        target_art_h = int(ratio * LAYOUT_CONFIG["series_9"]["art"]["h"])
+        art_config = getLayoutConfig("series_10", "art")
+        target_art_w = int(ratio * art_config["w"])
+        target_art_h = int(ratio * art_config["h"])
         
         # Resize
         art_resized = art_img.resize((target_art_w, target_art_h), Image.Resampling.LANCZOS)
         
         # Paste
-        image.paste(art_resized, (int(ratio * LAYOUT_CONFIG["series_9"]["art"]["x"]), int(ratio * LAYOUT_CONFIG["series_9"]["art"]["y"])))
+        image.paste(art_resized, (int(ratio * art_config["x"]), int(ratio * art_config["y"])))
