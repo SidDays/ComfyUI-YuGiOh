@@ -57,15 +57,16 @@ FRAME_MAP = {
 }
 
 ATTRIBUTE_MAP = {
-    "dark": "asset/image/attribute/dark-cn.png",
-    "light": "asset/image/attribute/light-cn.png",
-    "trap": "asset/image/attribute/trap-cn.png",
-    "spell": "asset/image/attribute/spell-cn.png",
-    "earth": "asset/image/attribute/earth-cn.png",
-    "wind": "asset/image/attribute/wind-cn.png",
-    "water": "asset/image/attribute/water-cn.png",
-    "fire": "asset/image/attribute/fire-cn.png",
-    "divine": "asset/image/attribute/divine-cn.png"
+    "none": "",
+    "dark": "asset/image/attribute/cn/dark.png",
+    "light": "asset/image/attribute/cn/light.png",
+    "trap": "asset/image/attribute/cn/trap.png",
+    "spell": "asset/image/attribute/cn/spell.png",
+    "earth": "asset/image/attribute/cn/earth.png",
+    "wind": "asset/image/attribute/cn/wind.png",
+    "water": "asset/image/attribute/cn/water.png",
+    "fire": "asset/image/attribute/cn/fire.png",
+    "divine": "asset/image/attribute/cn/divine.png"
 }
 
 STAR_PATH = "asset/image/star/level.png"
