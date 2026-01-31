@@ -4,21 +4,26 @@ from ..utils import get_font
 from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, LAYOUT_CONFIG
 
 class TitleElement(CardElement):
-    def __init__(self, name, title_color="#FFFFFF"):
+    def __init__(self, name, title_color="#FFFFFF", attribute="none"):
         self.name = name
         self.title_color = title_color
+        self.attribute = attribute
 
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        title_font_size = int(LAYOUT_CONFIG["series_9"]["title"]["font_size"])
+        TITLE_CONFIG = LAYOUT_CONFIG["series_9"]["title"]
+        
+        title_font_size = int(TITLE_CONFIG["font_size"])
         title_font = get_font(title_font_size, "MatrixSmallCaps.otf")
 
         left, top, right, bottom = draw.textbbox((0, 0), self.name, font=title_font)
         text_w = right - left
         text_h = bottom - top
         
-        max_title_w = LAYOUT_CONFIG["series_9"]["title"]["w"]
+        max_title_w = TITLE_CONFIG["w_attribute"]
+        if self.attribute == "none":
+            max_title_w = TITLE_CONFIG["w_full"]
         
         # Draw onto a separate layer to allow resizing
         # Create a layer with the exact text dimensions.
@@ -30,7 +35,7 @@ class TitleElement(CardElement):
         if text_w > max_title_w:
             title_layer = title_layer.resize((max_title_w, int(title_layer.height)), Image.Resampling.LANCZOS)
         
-        title_x = int(LAYOUT_CONFIG["series_9"]["title"]["x"])
-        title_y = int(LAYOUT_CONFIG["series_9"]["title"]["y"])
+        title_x = int(TITLE_CONFIG["x"])
+        title_y = int(TITLE_CONFIG["y"])
         
         image.paste(title_layer, (int(W * title_x / EXPECTED_WIDTH), int(H * title_y / EXPECTED_HEIGHT)), title_layer)
