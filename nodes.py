@@ -1,5 +1,5 @@
 from .src.generator import generate_yugioh_card_image
-from .src.config import FRAME_MAP
+from .src.config import ATTRIBUTE_MAP, FRAME_MAP
 
 class YuGiOhCardGenerator:
     """
@@ -20,7 +20,7 @@ class YuGiOhCardGenerator:
                 "title_color": ("STRING", {"default": "#FFFFFF", "multiline": False}),
                 "frame": (list(FRAME_MAP.keys()),),
                 "art": ("IMAGE",),
-                "attribute": (["none", "dark", "light", "earth", "wind", "water", "fire", "spell", "trap", "divine"],),
+                "attribute": (list(ATTRIBUTE_MAP.keys()),),
                 "name": ("STRING", {"default": "Dark Magician", "multiline": False}),
                 "level_rank": ("INT", {"default": 7, "min": 0, "max": 12}),
                 "type": ("STRING", {"default": "[ Spellcaster / Normal ]", "multiline": False}),
