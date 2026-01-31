@@ -13,7 +13,8 @@ LAYOUT_CONFIG = {
         "title": {
             "x": 60,
             "y": 69,
-            "w": 607,
+            "w_attribute": 607,
+            "w_full": 687,
             "h": 60,
             "font_size": 78,
         },
