@@ -31,13 +31,19 @@ LAYOUT_CONFIG = {
             "x": 49,
             "y": 962,
             "font_size": 41
-        }
+        },
+        "level_stars": {
+            "anchor_x": 729,
+            "anchor_y": 145,
+            "star_size": 49,
+            "star_spacing": 5
+        },
     }
 }
 
 # Image Maps
 FRAME_MAP = {
-    "effect": "asset/image/frame/effect-s9.png",
+    "effect": "asset/image/frame/effect-s11.png",
     "spell": "asset/image/frame/spell-s11.png"
 }
 
@@ -60,11 +66,6 @@ EXPECTED_WIDTH = 813
 EXPECTED_HEIGHT = 1185
 
 # Normalized Coordinates (0.0 to 1.0 based on canvas size)
-
-# Stars / Level
-STAR_Y = 0.155
-STAR_SIZE_RATIO = 0.065
-STAR_SPACING = 0.065
 
 # Description / Effect
 DESC_X = 0.065
