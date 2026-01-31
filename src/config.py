@@ -15,7 +15,7 @@ LAYOUT_CONFIG = {
             "y": 69,
             "w": 607,
             "h": 60,
-            "font_size": 78
+            "font_size": 78,
         },
         "attribute": {
             "x": 680,
@@ -60,12 +60,6 @@ EXPECTED_WIDTH = 813
 EXPECTED_HEIGHT = 1185
 
 # Normalized Coordinates (0.0 to 1.0 based on canvas size)
-
-# Title
-TITLE_X = 0.05
-TITLE_Y = 0.035
-TITLE_MAX_W = 0.78
-TITLE_FONT_SIZE_RATIO = 0.08
 
 # Stars / Level
 STAR_Y = 0.155
