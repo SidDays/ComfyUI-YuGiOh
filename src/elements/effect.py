@@ -2,7 +2,7 @@ import re
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import EXPECTED_HEIGHT, EXPECTED_WIDTH, getLayoutConfig
+from ..config import EXPECTED_HEIGHT, EXPECTED_WIDTH, get_layout_config
 
 def parse_description(text):
     """Splits text into tokens: Justified, Compressed, NonBreaking, or Words."""
@@ -68,7 +68,7 @@ class EffectElement(CardElement):
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        effect_config = getLayoutConfig("series_10", "effect")
+        effect_config = get_layout_config("series_10", "effect")
                  
         desc_x = int(W * effect_config["x"] / EXPECTED_WIDTH)
         desc_y = int(H * effect_config["y"] / EXPECTED_HEIGHT)

@@ -76,7 +76,7 @@ LAYOUT_CONFIG = {
     }
 }
 
-def getLayoutConfig(series_name: SeriesName, element_name):
+def get_layout_config(series_name: SeriesName, element_name):
     return LAYOUT_CONFIG[series_name][element_name]
 
 # Image Maps
