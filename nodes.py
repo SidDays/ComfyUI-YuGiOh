@@ -28,7 +28,12 @@ class YuGiOhCardGenerator:
                 "link_markers": ("STRING", {"default": ""}),
                 "is_pendulum": ("BOOLEAN", {"default": False}),
                 "pendulum_scale_blue": ("STRING", {"default": ""}),
-                "pendulum_scale_red": ("STRING", {"default": "auto"}),
+                "pendulum_scale_red": ("STRING", {"default": "auto"}), 
+                "corner_text": ("STRING", {"default": ""}),
+                "set_id": ("STRING", {"default": ""}),
+                "password": ("STRING", {"default": ""}),
+                "edition": ("STRING", {"default": ""}),
+                "copyright": ("STRING", {"default": "©2020 Studio Dice/SHUEISHA, TV TOKYO, KONAMI"}),
                 "json_input": ("STRING", {"default": "{}", "multiline": True}),
             }
         }
@@ -38,8 +43,8 @@ class YuGiOhCardGenerator:
     FUNCTION = "generate_card"
     CATEGORY = "Yu-Gi-Oh!"
 
-    def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input):
-        return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input)
+    def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, corner_text, set_id, password, edition, copyright, json_input):
+        return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, corner_text, set_id, password, edition, copyright, json_input)
 
 NODE_CLASS_MAPPINGS = {
     "YuGiOhCardGenerator": YuGiOhCardGenerator
