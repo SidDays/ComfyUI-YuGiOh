@@ -52,10 +52,16 @@ LAYOUT_CONFIG = {
             "star_spacing": 5
         },
         "stats": {
-            "atk_x": 515,
-            "def_x": 686,
-            "y": 1075,
-            "font_size": 36
+            "atk_x": 582,
+            "def_x": 748,
+            "y": 1081,
+            "font_size": 36,
+            "separator_x": 64,
+            "separator_y": 1076,
+            "separator_width": (746-64),
+            "separator_height": 2,
+            "atk_label_x": 433,
+            "def_label_x": 601
         },
         "description": {
             "x": 62,
