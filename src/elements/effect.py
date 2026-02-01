@@ -2,7 +2,7 @@ import re
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import DESC_X, DESC_Y, DESC_W, DESC_H, DESC_FONT_SIZE_RATIO
+from ..config import EXPECTED_HEIGHT, EXPECTED_WIDTH, getLayoutConfig
 
 def parse_description(text):
     """Splits text into tokens: Justified, Compressed, NonBreaking, or Words."""
@@ -68,13 +68,13 @@ class EffectElement(CardElement):
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        desc_x = int(W * DESC_X)
-        desc_y = int(H * DESC_Y)
-        max_desc_w = int(W * DESC_W)
-        max_desc_h = int(H * DESC_H)
+        desc_x = int(W * getLayoutConfig("series_10", "description")["x"] / EXPECTED_WIDTH)
+        desc_y = int(H * getLayoutConfig("series_10", "description")["y"] / EXPECTED_HEIGHT)
+        max_desc_w = int(W * getLayoutConfig("series_10", "description")["w"] / EXPECTED_WIDTH)
+        max_desc_h = int(H * getLayoutConfig("series_10", "description")["h"] / EXPECTED_HEIGHT)
         
         # Determine Font Size
-        current_font_size = int(H * DESC_FONT_SIZE_RATIO)
+        current_font_size = int(H * getLayoutConfig("series_10", "description")["font_size"] / EXPECTED_HEIGHT)
         min_font_size = 8
         final_layout = []
         final_font = None
@@ -87,7 +87,7 @@ class EffectElement(CardElement):
             calculated_lines = layout_text(tokens, temp_font, max_desc_w)
             
             _, _, _, char_h = draw.textbbox((0,0), "Ag", font=temp_font)
-            line_height_px = char_h + 2 # Padding
+            line_height_px = char_h - 2
             
             total_h = len(calculated_lines) * line_height_px
             
