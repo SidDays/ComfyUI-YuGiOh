@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, LAYOUT_CONFIG, getLayoutConfig
+from ..config import EXPECTED_WIDTH, EXPECTED_HEIGHT, LAYOUT_CONFIG, get_layout_config
 
 class TitleElement(CardElement):
     def __init__(self, name, attribute="none"):
@@ -14,7 +14,7 @@ class TitleElement(CardElement):
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        TITLE_CONFIG = getLayoutConfig("series_10", "title")
+        TITLE_CONFIG = get_layout_config("series_10", "title")
         
         title_font_size = int(TITLE_CONFIG["font_size"])
         title_font = get_font(title_font_size, "MatrixSmallCaps.otf")

@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import getLayoutConfig, EXPECTED_WIDTH, EXPECTED_HEIGHT
+from ..config import get_layout_config, EXPECTED_WIDTH, EXPECTED_HEIGHT
 
 class StatsElement(CardElement):
     def __init__(self, atk_value, def_value, frame_type):
@@ -12,8 +12,8 @@ class StatsElement(CardElement):
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        stats_config = getLayoutConfig("series_10", "stats")
-        separator_config = getLayoutConfig("series_10", "effect_stats_separator")
+        stats_config = get_layout_config("series_10", "stats")
+        separator_config = get_layout_config("series_10", "effect_stats_separator")
 
         if (self.atk == "" and self.def_val == ""):
             return

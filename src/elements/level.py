@@ -1,7 +1,7 @@
 from PIL import Image
 from .base_element import CardElement
 from ..utils import load_image
-from ..config import getLayoutConfig, STAR_PATH
+from ..config import get_layout_config, STAR_PATH
 
 class LevelElement(CardElement):
     def __init__(self, level_rank):
@@ -13,7 +13,7 @@ class LevelElement(CardElement):
 
         W, H = image.size
         
-        STAR_CONFIG = getLayoutConfig("series_10", "level_rank")
+        STAR_CONFIG = get_layout_config("series_10", "level_rank")
         
         # Reuse global star loading or load per draw? 
         # Caching might be better but for now load per draw is safer/simpler

@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from .base_element import CardElement
 from ..utils import get_font
-from ..config import getLayoutConfig, EXPECTED_WIDTH, EXPECTED_HEIGHT
+from ..config import get_layout_config, EXPECTED_WIDTH, EXPECTED_HEIGHT
 
 class TypeInfoElement(CardElement):
     def __init__(self, type_text, frame_type):
@@ -13,7 +13,7 @@ class TypeInfoElement(CardElement):
         ratio = W / EXPECTED_WIDTH
         display_text = f"[ {self.type_text} ]"
         # Use specific font for spell format
-        spell_trap_type_config = getLayoutConfig("series_10", "spell_trap_type")
+        spell_trap_type_config = get_layout_config("series_10", "spell_trap_type")
         font_size = int(spell_trap_type_config["font_size"] * ratio)
         type_font = get_font(font_size, "YuGiOhITCStoneSerifBSc.ttf")
 
@@ -33,7 +33,7 @@ class TypeInfoElement(CardElement):
         ratio_h = H / EXPECTED_HEIGHT
         display_text = f"[{self.type_text}]"
         
-        monster_type_config = getLayoutConfig("series_10", "monster_type")
+        monster_type_config = get_layout_config("series_10", "monster_type")
         font_size = int(monster_type_config["font_size"] * ratio_w)
         type_font = get_font(font_size, font_name="YuGiOhITCStoneSerifBSc.ttf")
         
