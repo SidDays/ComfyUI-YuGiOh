@@ -34,18 +34,13 @@ class StatsElement(CardElement):
         stats_y = int(H * stats_config["y"] / EXPECTED_HEIGHT)
         
         atk_label_str = "ATK /"
+        draw.text((stats_atk_label_x, stats_y), atk_label_str, font=stats_label_font, fill=(0,0,0))
+        
         atk_str = str(self.atk)
+        draw.text((stats_atk_x, stats_y), atk_str, font=stats_font, fill=(0,0,0), anchor="ra")
         
         def_label_str = "DEF /"
-        def_str = str(self.def_val)
-        
-
-        l, t, r, b = draw.textbbox((0, 0), atk_str, font=stats_font)
-        atk_w = r - l
-        l, t, r, b = draw.textbbox((0, 0), def_str, font=stats_font)
-        def_w = r - l
-        
-        draw.text((stats_atk_label_x, stats_y), atk_label_str, font=stats_label_font, fill=(0,0,0))
-        draw.text((stats_atk_x - atk_w, stats_y), atk_str, font=stats_font, fill=(0,0,0))
         draw.text((stats_def_label_x, stats_y), def_label_str, font=stats_label_font, fill=(0,0,0))
-        draw.text((stats_def_x - def_w, stats_y), def_str, font=stats_font, fill=(0,0,0))
+        
+        def_str = str(self.def_val)
+        draw.text((stats_def_x, stats_y), def_str, font=stats_font, fill=(0,0,0), anchor="ra")
