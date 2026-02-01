@@ -56,6 +56,14 @@ LAYOUT_CONFIG = {
             "def_x": 686,
             "y": 1075,
             "font_size": 36
+        },
+        "description": {
+            "x": 62,
+            "y": 922,
+            "w": 689,
+            "h": 165,
+            "font_size": 29,
+            "line_height": 26
         }
     }
 }
@@ -106,12 +114,3 @@ STAR_PATH = "asset/image/star/level.png"
 # Dimensions and Ratios
 EXPECTED_WIDTH = 813
 EXPECTED_HEIGHT = 1185
-
-# Normalized Coordinates (0.0 to 1.0 based on canvas size)
-
-# Description / Effect
-DESC_X = 0.065
-DESC_Y = 0.825
-DESC_W = 0.87
-DESC_H = 0.14
-DESC_FONT_SIZE_RATIO = 0.045
