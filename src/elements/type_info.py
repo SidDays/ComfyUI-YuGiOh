@@ -31,6 +31,7 @@ class TypeInfoElement(CardElement):
         W, H = image.size
         ratio_w = W / EXPECTED_WIDTH
         ratio_h = H / EXPECTED_HEIGHT
+        display_text = f"[{self.type_text}]"
         
         monster_type_config = getLayoutConfig("series_10", "monster_type")
         font_size = int(monster_type_config["font_size"] * ratio_w)
@@ -38,7 +39,7 @@ class TypeInfoElement(CardElement):
         
         x = int(monster_type_config["x"] * ratio_w)
         y = int(monster_type_config["y"] * ratio_h)
-        draw.text((x, y), self.type_text, font=type_font, fill=(0,0,0))
+        draw.text((x, y), display_text, font=type_font, fill=(0,0,0))
 
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         if self.frame_type == "spell" or self.frame_type == "trap":
