@@ -8,6 +8,11 @@ LAYOUTS: List[SeriesName] = [
     "series_10",
 ]
 
+# FONT_MAP = {
+#     "Matrix Book": "asset/font/MatrixBook.ttf",
+#     "ITC Stone Serif Bold Small Caps": "asset/font/YuGiOhITCStoneSerifBSc.ttf",
+# }
+
 # Main Configuration Dictionary
 LAYOUT_CONFIG = {
     "series_10": {
@@ -36,9 +41,9 @@ LAYOUT_CONFIG = {
             "font_size": 43
         },
         "monster_type": {
-            "x": 49,
-            "y": 962,
-            "font_size": 41
+            "x": 62,
+            "y": 887,
+            "font_size": 33
         },
         "level_rank": {
             "anchor_x": 729,
@@ -46,6 +51,12 @@ LAYOUT_CONFIG = {
             "star_size": 49,
             "star_spacing": 5
         },
+        "stats": {
+            "atk_x": 515,
+            "def_x": 686,
+            "y": 1075,
+            "font_size": 36
+        }
     }
 }
 
@@ -104,9 +115,3 @@ DESC_Y = 0.825
 DESC_W = 0.87
 DESC_H = 0.14
 DESC_FONT_SIZE_RATIO = 0.045
-
-# Stats
-STATS_Y = 0.94
-ATK_X = 0.65
-DEF_X = 0.85
-STATS_FONT_SIZE_RATIO = 0.035

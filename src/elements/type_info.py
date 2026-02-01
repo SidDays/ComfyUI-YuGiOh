@@ -34,7 +34,7 @@ class TypeInfoElement(CardElement):
         
         monster_type_config = getLayoutConfig("series_10", "monster_type")
         font_size = int(monster_type_config["font_size"] * ratio_w)
-        type_font = get_font(font_size)
+        type_font = get_font(font_size, font_name="YuGiOhITCStoneSerifBSc.ttf")
         
         x = int(monster_type_config["x"] * ratio_w)
         y = int(monster_type_config["y"] * ratio_h)
