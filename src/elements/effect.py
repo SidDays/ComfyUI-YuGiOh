@@ -68,13 +68,15 @@ class EffectElement(CardElement):
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
-        desc_x = int(W * getLayoutConfig("series_10", "description")["x"] / EXPECTED_WIDTH)
-        desc_y = int(H * getLayoutConfig("series_10", "description")["y"] / EXPECTED_HEIGHT)
-        max_desc_w = int(W * getLayoutConfig("series_10", "description")["w"] / EXPECTED_WIDTH)
-        max_desc_h = int(H * getLayoutConfig("series_10", "description")["h"] / EXPECTED_HEIGHT)
+        effect_config = getLayoutConfig("series_10", "effect")
+                 
+        desc_x = int(W * effect_config["x"] / EXPECTED_WIDTH)
+        desc_y = int(H * effect_config["y"] / EXPECTED_HEIGHT)
+        max_desc_w = int(W * effect_config["w"] / EXPECTED_WIDTH)
+        max_desc_h = int(H * effect_config["h"] / EXPECTED_HEIGHT)
         
         # Determine Font Size
-        current_font_size = int(H * getLayoutConfig("series_10", "description")["font_size"] / EXPECTED_HEIGHT)
+        current_font_size = int(H * effect_config["font_size"] / EXPECTED_HEIGHT)
         min_font_size = 8
         final_layout = []
         final_font = None

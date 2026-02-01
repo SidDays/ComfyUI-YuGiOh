@@ -10,20 +10,19 @@ class StatsElement(CardElement):
         self.frame_type = frame_type
 
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
-        if self.frame_type == "spell":
-            return
-            
         W, H = image.size
         
-        
         stats_config = getLayoutConfig("series_10", "stats")
+        separator_config = getLayoutConfig("series_10", "effect_stats_separator")
 
-        if self.atk is not None or self.def_val is not None:
-            sep_x = int(W * stats_config["separator_x"] / EXPECTED_WIDTH)
-            sep_y = int(H * stats_config["separator_y"] / EXPECTED_HEIGHT)
-            sep_w = int(W * stats_config["separator_width"] / EXPECTED_WIDTH)
-            sep_h = int(H * stats_config["separator_height"] / EXPECTED_HEIGHT)
-            draw.rectangle((sep_x, sep_y, sep_x + sep_w, sep_y + sep_h), fill=(0,0,0))
+        if (self.atk == "" and self.def_val == ""):
+            return
+        
+        sep_x = int(W * separator_config["x"] / EXPECTED_WIDTH)
+        sep_y = int(H * separator_config["y"] / EXPECTED_HEIGHT)
+        sep_w = int(W * separator_config["width"] / EXPECTED_WIDTH)
+        sep_h = int(H * separator_config["height"] / EXPECTED_HEIGHT)
+        draw.rectangle((sep_x, sep_y, sep_x + sep_w, sep_y + sep_h), fill=(0,0,0))
 
         stats_font = get_font(int(stats_config["font_size"]), font_name="MatrixBoldFractions.otf")
         stats_label_font = get_font(int(stats_config["font_size"]), font_name="MatrixBoldSmallCaps.otf")
