@@ -9,7 +9,7 @@ from .elements.type_info import TypeInfoElement
 from .elements.stats import StatsElement
 from .elements.effect import EffectElement
 
-def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, json_input):
+def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, corner_text, set_id, password, edition, copyright,  json_input):
     """
     Core logic to generate a Yu-Gi-Oh card image.
     Returns a Tensor as expected by ComfyUI.
@@ -30,7 +30,7 @@ def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, 
         # CornerTextElement(corner_text)
         # SetIdElement(set_id)
         # EffectElement(effect)
-        # StatsElement(atk_value, def_value, frame),
+        StatsElement(atk_value, def_value, frame),
         # PasswordElement(password)
         # EditionElement(edition)
         # CopyrightElement(copyright)
