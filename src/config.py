@@ -73,6 +73,31 @@ LAYOUT_CONFIG = {
             "width": (746-64),
             "height": 2,
         },
+        "password": {
+            "x": 62,
+            "y": 1150,
+            "font_size": 20
+        },
+        "set_id": {
+            "x": 400,
+            "y": 1150,
+            "font_size": 20
+        },
+        "copyright": {
+            "x": 62,
+            "y": 1175,
+            "font_size": 16
+        },
+        "edition": {
+            "x": 700,
+            "y": 1150,
+            "font_size": 20
+        },
+        "corner_text": {
+            "x": 62,
+            "y": 146,
+            "font_size": 20
+        },
     }
 }
 
