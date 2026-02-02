@@ -8,8 +8,13 @@ from .elements.title import TitleElement
 from .elements.type_info import TypeInfoElement
 from .elements.stats import StatsElement
 from .elements.effect import EffectElement
+from .elements.password import PasswordElement
+from .elements.set_id import SetIdElement
+from .elements.edition import EditionElement
+from .elements.copyright import CopyrightElement
+from .elements.corner_text import CornerTextElement
 
-def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, corner_text, set_id, password, edition, copyright,  json_input):
+def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override):
     """
     Core logic to generate a Yu-Gi-Oh card image.
     Returns a Tensor as expected by ComfyUI.
@@ -25,15 +30,15 @@ def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, 
         # IconElement(icon),
         LevelElement(level_rank),
         ArtworkElement(art),
-        # PendulumScalesElement(pendulum_scale_blue, pendulum_scale_red, frame),
+        # PendulumElement(pendulum_scale_blue, pendulum_scale_red, pendulum_effect, frame),
         # LinkMarkersElement(link_markers, frame),
-        # CornerTextElement(corner_text),
-        # SetIdElement(set_id),
+        CornerTextElement(corner_text),
+        SetIdElement(set_id),
         EffectElement(effect),
         StatsElement(atk_value, def_value, frame),
-        # PasswordElement(password),
-        # EditionElement(edition),
-        # CopyrightElement(copyright),
+        PasswordElement(password),
+        EditionElement(edition),
+        CopyrightElement(copyright),
         # StickerElement(sticker),
     ]
     
