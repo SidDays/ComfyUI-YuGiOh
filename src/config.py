@@ -74,29 +74,35 @@ LAYOUT_CONFIG = {
             "height": 2,
         },
         "password": {
-            "x": 62,
-            "y": 1150,
-            "font_size": 20
+            "x": 37,
+            "y": 1149,
+            "font_size": 23,
+            "anchor": "lb",
         },
         "set_id": {
-            "x": 400,
-            "y": 1150,
-            "font_size": 20
+            "x": 729,
+            "y": 863,
+            "font_size": 23,
+            "anchor": "rm",
         },
         "copyright": {
-            "x": 62,
-            "y": 1175,
-            "font_size": 16
+            "x": 733,
+            "y": 1149+5,
+            "w": (733-354),
+            "font_size": 21,
+            "anchor": "rb",
         },
         "edition": {
-            "x": 700,
-            "y": 1150,
-            "font_size": 20
+            "x": 162,
+            "y": 1149,
+            "font_size": 23,
+            "anchor": "lb",
         },
         "corner_text": {
-            "x": 62,
-            "y": 146,
-            "font_size": 20
+            "x": 86,
+            "y": 863,
+            "font_size": 23,
+            "anchor": "lm",
         },
     }
 }

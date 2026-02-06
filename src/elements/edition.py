@@ -14,11 +14,12 @@ class EditionElement(CardElement):
         W, H = image.size
         config = get_layout_config("series_10", "edition")
         
+        # TODO: Convert "1st" to superscript
         ratio = min(W / EXPECTED_WIDTH, H / EXPECTED_HEIGHT)
         font_size = int(config["font_size"] * ratio)
-        font = get_font(font_size, "MatrixBoldSmallCaps.otf")
+        font = get_font(font_size, "palab.ttf")
         
         x = int(W * config["x"] / EXPECTED_WIDTH)
         y = int(H * config["y"] / EXPECTED_HEIGHT)
         
-        draw.text((x, y), self.text, font=font, fill=(0, 0, 0))
+        draw.text((x, y), self.text, font=font, fill=(0, 0, 0), anchor=config["anchor"])
