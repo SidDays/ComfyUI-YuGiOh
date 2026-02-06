@@ -52,11 +52,15 @@ def layout_text(tokens, font, max_width):
                 current_width += added_w
             else:
                 if current_line:
-                    lines.append({'type': 'NORMAL', 'content': current_line})
+                    # Wrapped lines should be fully justified
+                    # JUSTIFY type expects a string of space-separated words
+                    text_content = " ".join([t['text'] for t in current_line])
+                    lines.append({'type': 'JUSTIFY', 'content': text_content})
                 current_line = [token]
                 current_width = token_w
     
     if current_line:
+        # Last line remains NORMAL (Left Aligned)
         lines.append({'type': 'NORMAL', 'content': current_line})
         
     return lines
