@@ -62,46 +62,93 @@ def layout_text(tokens, font, max_width):
     return lines
 
 class EffectElement(CardElement):
-    def __init__(self, effect_text):
+    def __init__(self, effect_text, type_text=None, frame_type="effect"):
         self.effect = effect_text
+        self.type_text = type_text
+        self.frame_type = frame_type
 
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
         W, H = image.size
         
         effect_config = get_layout_config("series_10", "effect")
-                 
+        monster_type_config = get_layout_config("series_10", "monster_type")
+
+        # Determine if we need to draw the type header (Monster cards only)
+        # We'll assume non-spell/trap frames are monsters, similar to how nodes.py defaults
+        is_monster = self.frame_type not in ["spell", "trap"] and self.type_text
+
+        if is_monster:
+            # Use top of monster type as start Y
+            desc_y = int(H * monster_type_config["y"] / EXPECTED_HEIGHT)
+            # Height extends from top of monster type to bottom of effect box
+            effect_bottom = effect_config["y"] + effect_config["h"]
+            total_available_h = int(H * (effect_bottom - monster_type_config["y"]) / EXPECTED_HEIGHT)
+        else:
+            desc_y = int(H * effect_config["y"] / EXPECTED_HEIGHT)
+            total_available_h = int(H * effect_config["h"] / EXPECTED_HEIGHT)
+
         desc_x = int(W * effect_config["x"] / EXPECTED_WIDTH)
-        desc_y = int(H * effect_config["y"] / EXPECTED_HEIGHT)
         max_desc_w = int(W * effect_config["w"] / EXPECTED_WIDTH)
-        max_desc_h = int(H * effect_config["h"] / EXPECTED_HEIGHT)
         
         # Determine Font Size
         current_font_size = int(H * effect_config["font_size"] / EXPECTED_HEIGHT)
         min_font_size = 8
+        
         final_layout = []
         final_font = None
+        final_header_font = None
         line_height_px = 0
+        header_height_px = 0
         
         tokens = parse_description(self.effect)
         
         while current_font_size >= min_font_size:
             temp_font = get_font(current_font_size)
+            
+            # Calculate Header metrics if monster
+            curr_header_h = 0
+            temp_header_font = None
+            if is_monster:
+                # Ratio of monster_type size (33) to effect size (29) is ~1.138
+                ratio = monster_type_config["font_size"] / effect_config["font_size"]
+                header_size = int(current_font_size * ratio)
+                temp_header_font = get_font(header_size, "YuGiOhITCStoneSerifBSc.ttf")
+                _, _, _, char_h_header = draw.textbbox((0,0), "Ag", font=temp_header_font)
+                curr_header_h = char_h_header
+                
+                # Check if header fits width (optional, usually fits, but good to check)
+                w_header = temp_header_font.getlength(f"[{self.type_text}]")
+                if w_header > max_desc_w:
+                    # If header is too wide, we consider this font size too big
+                    current_font_size -= 1
+                    continue
+
             calculated_lines = layout_text(tokens, temp_font, max_desc_w)
             
             _, _, _, char_h = draw.textbbox((0,0), "Ag", font=temp_font)
-            line_height_px = char_h - 2
+            curr_line_h = char_h - 2
             
-            total_h = len(calculated_lines) * line_height_px
+            body_h = len(calculated_lines) * curr_line_h
+            total_content_h = body_h + curr_header_h
             
-            if total_h <= max_desc_h:
+            if total_content_h <= total_available_h:
                 final_layout = calculated_lines
                 final_font = temp_font
+                final_header_font = temp_header_font
+                line_height_px = curr_line_h
+                header_height_px = curr_header_h
                 break
             
             current_font_size -= 1
             
         if final_font is None:
+            # Fallback to min size
             final_font = get_font(min_font_size)
+            if is_monster:
+                ratio = monster_type_config["font_size"] / effect_config["font_size"]
+                final_header_font = get_font(int(min_font_size * ratio), "YuGiOhITCStoneSerifBSc.ttf")
+                _, _, _, header_height_px = draw.textbbox((0,0), "Ag", font=final_header_font)
+            
             final_layout = layout_text(tokens, final_font, max_desc_w)
             _, _, _, char_h = draw.textbbox((0,0), "Ag", font=final_font)
             line_height_px = char_h + 2
@@ -109,6 +156,11 @@ class EffectElement(CardElement):
         # Render
         y_cursor = desc_y
         
+        if is_monster and final_header_font:
+            header_text = f"[{self.type_text}]"
+            draw.text((desc_x, y_cursor), header_text, font=final_header_font, fill=(0,0,0))
+            y_cursor += header_height_px
+
         for line in final_layout:
             l_type = line['type']
             content = line['content']

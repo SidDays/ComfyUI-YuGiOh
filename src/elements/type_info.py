@@ -27,22 +27,5 @@ class TypeInfoElement(CardElement):
 
         draw.text((spell_type_x, spell_type_y), display_text, font=type_font, fill=(0,0,0))
 
-    def _draw_monster_type(self, image: Image.Image, draw: ImageDraw.ImageDraw):
-        W, H = image.size
-        ratio_w = W / EXPECTED_WIDTH
-        ratio_h = H / EXPECTED_HEIGHT
-        display_text = f"[{self.type_text}]"
-        
-        monster_type_config = get_layout_config("series_10", "monster_type")
-        font_size = int(monster_type_config["font_size"] * ratio_w)
-        type_font = get_font(font_size, font_name="YuGiOhITCStoneSerifBSc.ttf")
-        
-        x = int(monster_type_config["x"] * ratio_w)
-        y = int(monster_type_config["y"] * ratio_h)
-        draw.text((x, y), display_text, font=type_font, fill=(0,0,0))
-
     def draw(self, image: Image.Image, draw: ImageDraw.ImageDraw):
-        if self.frame_type == "spell" or self.frame_type == "trap":
-            self._draw_spell_trap_type(image, draw)
-        else:
-            self._draw_monster_type(image, draw)
+        self._draw_spell_trap_type(image, draw)
