@@ -26,7 +26,8 @@ def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, 
     elements = [
         TitleElement(name, attribute),
         AttributeElement(attribute),
-        TypeInfoElement(type, frame),
+        # TypeInfoElement is now only for spell/trap here; Monster type is handled in EffectElement
+        TypeInfoElement(type, frame) if frame in ["spell", "trap"] else None,
         # IconElement(icon),
         LevelElement(level_rank),
         ArtworkElement(art),
@@ -34,13 +35,16 @@ def generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, 
         # LinkMarkersElement(link_markers, frame),
         CornerTextElement(corner_text),
         SetIdElement(set_id),
-        EffectElement(effect),
+        EffectElement(effect, type, frame),
         StatsElement(atk_value, def_value, frame),
         PasswordElement(password),
         EditionElement(edition),
         CopyrightElement(copyright),
         # StickerElement(sticker),
     ]
+    
+    # Filter out None elements
+    elements = [e for e in elements if e is not None]
     
     for element in elements:
         element.draw(base_img, draw)
