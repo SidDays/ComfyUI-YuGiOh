@@ -81,15 +81,12 @@ class EffectElement(CardElement):
         # We'll assume non-spell/trap frames are monsters, similar to how nodes.py defaults
         is_monster = self.frame_type not in ["spell", "trap"] and self.type_text
 
-        if is_monster:
-            # Use top of monster type as start Y
-            desc_y = int(H * monster_type_config["y"] / EXPECTED_HEIGHT)
-            # Height extends from top of monster type to bottom of effect box
-            effect_bottom = effect_config["y"] + effect_config["h"]
-            total_available_h = int(H * (effect_bottom - monster_type_config["y"]) / EXPECTED_HEIGHT)
-        else:
-            desc_y = int(H * effect_config["y"] / EXPECTED_HEIGHT)
-            total_available_h = int(H * effect_config["h"] / EXPECTED_HEIGHT)
+        # Use top of monster type as start Y.
+        # Height extends from top of monster type to bottom of effect box.
+        # TODO: Update effect box values in config instead of computing them here.
+        desc_y = int(H * monster_type_config["y"] / EXPECTED_HEIGHT)
+        effect_bottom = effect_config["y"] + effect_config["h"]
+        total_available_h = int(H * (effect_bottom - monster_type_config["y"]) / EXPECTED_HEIGHT)
 
         desc_x = int(W * effect_config["x"] / EXPECTED_WIDTH)
         max_desc_w = int(W * effect_config["w"] / EXPECTED_WIDTH)
