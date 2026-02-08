@@ -20,9 +20,15 @@ def parse_description(text):
         elif part.startswith('{') and part.endswith('}'):
             tokens.append({'type': 'NO_BREAK', 'text': part[1:-1]})
         else:
-            words = part.split(' ')
-            for w in words:
-                if w: tokens.append({'type': 'WORD', 'text': w})
+            # Split by newline first to preserve them as tokens
+            sub_parts = re.split(r'(\n)', part)
+            for sub in sub_parts:
+                if sub == '\n':
+                    tokens.append({'type': 'NEWLINE', 'text': '\n'})
+                elif sub:
+                    words = sub.split(' ')
+                    for w in words:
+                        if w: tokens.append({'type': 'WORD', 'text': w})
     return tokens
 
 def layout_text(tokens, font, max_width):
@@ -36,6 +42,13 @@ def layout_text(tokens, font, max_width):
         t_type = token['type']
         text = token['text']
         
+        if t_type == 'NEWLINE':
+            # Explicit newline forces current line to be NORMAL (left-aligned)
+            lines.append({'type': 'NORMAL', 'content': current_line})
+            current_line = []
+            current_width = 0
+            continue
+
         if t_type in ['JUSTIFY', 'COMPRESS']:
             if current_line:
                 lines.append({'type': 'NORMAL', 'content': current_line})
