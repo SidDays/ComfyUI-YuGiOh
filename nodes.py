@@ -18,7 +18,7 @@ class YuGiOhCardGenerator:
                 "name": ("STRING", {"default": "My Custom Card", "multiline": False}),
                 "attribute": (list(ATTRIBUTE_MAP.keys()),),
                 "type": ("STRING", {"default": "[ Spellcaster / Normal ]", "multiline": False}),
-                "icon": (list(ICONS_MAP.keys()), list(ICONS_MAP.keys())[0]),
+                "icon": (list(ICONS_MAP.keys()), {"default": list(ICONS_MAP.keys())[0]}),
                 "level_rank": ("INT", {"default": 7, "min": 0, "max": 12}),
                 "art": ("IMAGE",),
                 "effect": ("STRING", {"default": "The ultimate wizard in terms of attack and defense.", "multiline": True}),
