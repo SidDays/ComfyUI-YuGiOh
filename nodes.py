@@ -1,6 +1,10 @@
-import zlib
 from .src.generator import generate_yugioh_card_image
 from .src.config import ATTRIBUTE_MAP, FRAME_MAP, ICONS_MAP, LAYOUTS
+from .src.unity import (
+    DEFAULT_STEAM_LOCALDATA_DIR,
+    get_card_unity_path,
+    pack_master_duel_texture,
+)
 
 class YuGiOhCardGenerator:
     """
@@ -73,21 +77,74 @@ class YuGiOhMasterDuelUnityPath:
     CATEGORY = "Yu-Gi-Oh!"
 
     def get_unity_path(self, konami_id: int = None, region: str = "tcg"):
-        if konami_id is None or not isinstance(konami_id, int) or konami_id <= 0:
-            return ("",)
+        return (get_card_unity_path(konami_id, region),)
 
-        logical_path = f"Card/Images/Illust/{region}/{konami_id}"
-        crc = zlib.crc32(logical_path.encode("utf-8")) & 0xFFFFFFFF
-        hex_name = f"{crc:08x}"
-        return (f"{hex_name[:2]}/{hex_name}",)
+
+class YuGiOhMasterDuelAssetPacker:
+    """
+    A custom node for ComfyUI that patches a Yu-Gi-Oh! Master Duel Unity
+    AssetBundle's Texture2D with an input IMAGE tensor using UnityPy and saves
+    the modified bundle to <output_dir>/0000/<xx>/<bundle_hash>.
+    """
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+                "unity_path": ("STRING", {"default": "cd/cdcc181b", "multiline": False}),
+            },
+            "optional": {
+                "localdata_dir": (
+                    "STRING",
+                    {"default": DEFAULT_STEAM_LOCALDATA_DIR, "multiline": False},
+                ),
+                "output_dir": ("STRING", {"default": "", "multiline": False}),
+                "target_texture_name": ("STRING", {"default": "", "multiline": False}),
+                "resize_to_target": ("BOOLEAN", {"default": True}),
+                "compression": (["lz4", "none", "original"], {"default": "lz4"}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("saved_bundle_path",)
+    FUNCTION = "pack_asset"
+    OUTPUT_NODE = True
+    CATEGORY = "Yu-Gi-Oh!"
+
+    def pack_asset(
+        self,
+        image,
+        unity_path: str,
+        localdata_dir: str = DEFAULT_STEAM_LOCALDATA_DIR,
+        output_dir: str = "",
+        target_texture_name: str = "",
+        resize_to_target: bool = True,
+        compression: str = "lz4",
+    ):
+        saved_path = pack_master_duel_texture(
+            image=image,
+            unity_path=unity_path,
+            localdata_dir=localdata_dir,
+            output_dir=output_dir,
+            target_texture_name=target_texture_name,
+            resize_to_target=resize_to_target,
+            compression=compression,
+        )
+        return (saved_path,)
 
 
 NODE_CLASS_MAPPINGS = {
     "YuGiOhCardGenerator": YuGiOhCardGenerator,
     "YuGiOhMasterDuelUnityPath": YuGiOhMasterDuelUnityPath,
+    "YuGiOhMasterDuelAssetPacker": YuGiOhMasterDuelAssetPacker,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "YuGiOhCardGenerator": "Yu-Gi-Oh! Card Generator",
     "YuGiOhMasterDuelUnityPath": "Yu-Gi-Oh! Master Duel Unity Path",
+    "YuGiOhMasterDuelAssetPacker": "Yu-Gi-Oh! Master Duel Asset Packer",
 }
