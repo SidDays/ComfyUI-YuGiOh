@@ -1,3 +1,4 @@
+import zlib
 from .src.generator import generate_yugioh_card_image
 from .src.config import ATTRIBUTE_MAP, FRAME_MAP, ICONS_MAP, LAYOUTS
 
@@ -47,10 +48,45 @@ class YuGiOhCardGenerator:
     def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override):
         return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override)
 
+
+class YuGiOhMasterDuelUnityPath:
+    """
+    A custom node for ComfyUI that converts a Konami Card ID into its
+    Yu-Gi-Oh! Master Duel Unity bundle path (e.g., 10544 -> cd/cdcc181b).
+    """
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "card_id": ("INT", {"default": 10544, "min": 0, "max": 99999999, "step": 1}),
+            },
+            "optional": {
+                "region": (["tcg", "ocg", "common"], {"default": "tcg"}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("unity_path",)
+    FUNCTION = "get_unity_path"
+    CATEGORY = "Yu-Gi-Oh!"
+
+    def get_unity_path(self, card_id: int, region: str = "tcg"):
+        logical_path = f"Card/Images/Illust/{region}/{card_id}"
+        crc = zlib.crc32(logical_path.encode("utf-8")) & 0xFFFFFFFF
+        hex_name = f"{crc:08x}"
+        return (f"{hex_name[:2]}/{hex_name}",)
+
+
 NODE_CLASS_MAPPINGS = {
-    "YuGiOhCardGenerator": YuGiOhCardGenerator
+    "YuGiOhCardGenerator": YuGiOhCardGenerator,
+    "YuGiOhMasterDuelUnityPath": YuGiOhMasterDuelUnityPath,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "YuGiOhCardGenerator": "Yu-Gi-Oh! Card Generator"
+    "YuGiOhCardGenerator": "Yu-Gi-Oh! Card Generator",
+    "YuGiOhMasterDuelUnityPath": "Yu-Gi-Oh! Master Duel Unity Path",
 }
