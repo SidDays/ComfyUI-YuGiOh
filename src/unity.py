@@ -1,13 +1,135 @@
+import json
 import os
+import threading
+import time
+import urllib.parse
+import urllib.request
 import zlib
 from PIL import Image
 import UnityPy
 
-from .utils import tensor_to_pil
+from .utils import get_root_dir, tensor_to_pil
 
 DEFAULT_STEAM_LOCALDATA_DIR = (
     r"C:\Program Files (x86)\Steam\steamapps\common\Yu-Gi-Oh! Master Duel\LocalData"
 )
+
+LOOKUP_DB_REL_PATH = os.path.join("asset", "db", "konami_id_lookup.json")
+YGOPRODECK_API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
+MIN_API_INTERVAL_SEC = 0.1  # Max 10 requests/sec (YGOPRODeck limit is 20 req/sec)
+
+_LOOKUP_CACHE = None
+_LOOKUP_LOCK = threading.Lock()
+_LAST_API_CALL_TS = 0.0
+
+
+def _get_lookup_db_path() -> str:
+    return os.path.join(get_root_dir(), LOOKUP_DB_REL_PATH)
+
+
+def _load_lookup_cache() -> dict:
+    global _LOOKUP_CACHE
+    if _LOOKUP_CACHE is not None:
+        return _LOOKUP_CACHE
+
+    db_path = _get_lookup_db_path()
+    if os.path.isfile(db_path):
+        try:
+            with open(db_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    _LOOKUP_CACHE = data.get("by_password", data)
+                    return _LOOKUP_CACHE
+        except Exception:
+            pass
+
+    _LOOKUP_CACHE = {}
+    return _LOOKUP_CACHE
+
+
+def _save_lookup_cache() -> None:
+    if _LOOKUP_CACHE is None:
+        return
+    db_path = _get_lookup_db_path()
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    with open(db_path, "w", encoding="utf-8") as f:
+        json.dump(_LOOKUP_CACHE, f, indent=4, sort_keys=True)
+        f.write("\n")
+
+
+def _normalize_password(password: str) -> str:
+    if not password:
+        return ""
+    cleaned = password.strip()
+    if not cleaned.isdigit():
+        return ""
+    return cleaned.lstrip("0") or "0"
+
+
+def _query_ygoprodeck(params: dict) -> dict | None:
+    global _LAST_API_CALL_TS
+    query = {"misc": "yes", **params}
+    url = f"{YGOPRODECK_API_URL}?{urllib.parse.urlencode(query)}"
+    req = urllib.request.Request(url, headers={"User-Agent": "ComfyUI-YuGiOh/1.0"})
+
+    now = time.monotonic()
+    elapsed = now - _LAST_API_CALL_TS
+    if elapsed < MIN_API_INTERVAL_SEC:
+        time.sleep(MIN_API_INTERVAL_SEC - elapsed)
+    _LAST_API_CALL_TS = time.monotonic()
+
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return None
+
+
+def lookup_konami_id(
+    password: str = "",
+    use_ygoprodeck_api: bool = False,
+) -> int:
+    """
+    Resolves a Yu-Gi-Oh! card password (8-digit passcode) to its Konami ID using
+    the local lookup cache ('asset/db/konami_id_lookup.json'), optionally falling
+    back to a rate-limited YGOPRODeck API query and caching the result.
+    Returns 0 if no matching Konami ID is found.
+    """
+    norm_pw = _normalize_password(password)
+    if not norm_pw:
+        return 0
+
+    with _LOOKUP_LOCK:
+        by_pw = _load_lookup_cache()
+
+        if norm_pw in by_pw:
+            return int(by_pw[norm_pw])
+
+        if not use_ygoprodeck_api:
+            return 0
+
+        payload = _query_ygoprodeck({"id": norm_pw})
+        if not payload:
+            return 0
+
+        cards = payload.get("data", [])
+        if not cards:
+            return 0
+
+        target = cards[0]
+        misc_list = target.get("misc_info", [])
+        if not misc_list or "konami_id" not in misc_list[0]:
+            return 0
+
+        resolved_id = int(misc_list[0]["konami_id"])
+        by_pw[norm_pw] = resolved_id
+
+        try:
+            _save_lookup_cache()
+        except Exception:
+            pass
+
+        return resolved_id
 
 
 def get_card_unity_path(konami_id: int = None, region: str = "tcg") -> str:

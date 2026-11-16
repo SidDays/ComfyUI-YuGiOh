@@ -3,6 +3,7 @@ from .src.config import ATTRIBUTE_MAP, FRAME_MAP, ICONS_MAP, LAYOUTS
 from .src.unity import (
     DEFAULT_STEAM_LOCALDATA_DIR,
     get_card_unity_path,
+    lookup_konami_id,
     pack_master_duel_texture,
 )
 
@@ -51,6 +52,43 @@ class YuGiOhCardGenerator:
 
     def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override):
         return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override)
+
+
+class YuGiOhPasswordToKonamiId:
+    """
+    A custom node for ComfyUI that looks up a Yu-Gi-Oh! card's Konami ID
+    from its 8-digit password (passcode) using a local lookup cache pre-populated
+    from YdkIds, with an optional rate-limited YGOPRODeck API fallback.
+    """
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "optional": {
+                "password": ("STRING", {"default": "46448938", "multiline": False}),
+                "use_ygoprodeck_api": ("BOOLEAN", {"default": False}),
+            },
+        }
+
+    RETURN_TYPES = ("INT",)
+    RETURN_NAMES = ("konami_id",)
+    FUNCTION = "lookup_id"
+    CATEGORY = "Yu-Gi-Oh!"
+
+    def lookup_id(
+        self,
+        password: str = "",
+        use_ygoprodeck_api: bool = False,
+    ):
+        return (
+            lookup_konami_id(
+                password=password,
+                use_ygoprodeck_api=use_ygoprodeck_api,
+            ),
+        )
 
 
 class YuGiOhMasterDuelUnityPath:
@@ -139,12 +177,14 @@ class YuGiOhMasterDuelAssetPacker:
 
 NODE_CLASS_MAPPINGS = {
     "YuGiOhCardGenerator": YuGiOhCardGenerator,
+    "YuGiOhPasswordToKonamiId": YuGiOhPasswordToKonamiId,
     "YuGiOhMasterDuelUnityPath": YuGiOhMasterDuelUnityPath,
     "YuGiOhMasterDuelAssetPacker": YuGiOhMasterDuelAssetPacker,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "YuGiOhCardGenerator": "Yu-Gi-Oh! Card Generator",
+    "YuGiOhPasswordToKonamiId": "Yu-Gi-Oh! Password to Konami ID",
     "YuGiOhMasterDuelUnityPath": "Yu-Gi-Oh! Master Duel Unity Path",
     "YuGiOhMasterDuelAssetPacker": "Yu-Gi-Oh! Master Duel Asset Packer",
 }
