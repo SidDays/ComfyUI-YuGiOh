@@ -61,10 +61,8 @@ class YuGiOhMasterDuelUnityPath:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {
-                "card_id": ("INT", {"default": 10544, "min": 0, "max": 99999999, "step": 1}),
-            },
             "optional": {
+                "konami_id": ("INT", {"default": 4007, "min": 0, "max": 99999999, "step": 1}),
                 "region": (["tcg", "ocg", "common"], {"default": "tcg"}),
             },
         }
@@ -74,8 +72,11 @@ class YuGiOhMasterDuelUnityPath:
     FUNCTION = "get_unity_path"
     CATEGORY = "Yu-Gi-Oh!"
 
-    def get_unity_path(self, card_id: int, region: str = "tcg"):
-        logical_path = f"Card/Images/Illust/{region}/{card_id}"
+    def get_unity_path(self, konami_id: int = None, region: str = "tcg"):
+        if konami_id is None or not isinstance(konami_id, int) or konami_id <= 0:
+            return ("",)
+
+        logical_path = f"Card/Images/Illust/{region}/{konami_id}"
         crc = zlib.crc32(logical_path.encode("utf-8")) & 0xFFFFFFFF
         hex_name = f"{crc:08x}"
         return (f"{hex_name[:2]}/{hex_name}",)
