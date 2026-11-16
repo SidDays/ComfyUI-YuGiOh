@@ -19,6 +19,7 @@ YGOPRODECK_API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
 MIN_API_INTERVAL_SEC = 0.1  # Max 10 requests/sec (YGOPRODeck limit is 20 req/sec)
 
 _LOOKUP_CACHE = None
+_PW_TO_KONAMI_ID = None
 _LOOKUP_LOCK = threading.Lock()
 _LAST_API_CALL_TS = 0.0
 
@@ -27,24 +28,30 @@ def _get_lookup_db_path() -> str:
     return os.path.join(get_root_dir(), LOOKUP_DB_REL_PATH)
 
 
-def _load_lookup_cache() -> dict:
-    global _LOOKUP_CACHE
-    if _LOOKUP_CACHE is not None:
-        return _LOOKUP_CACHE
+def _load_lookup_cache() -> tuple[dict, dict]:
+    global _LOOKUP_CACHE, _PW_TO_KONAMI_ID
+    if _LOOKUP_CACHE is not None and _PW_TO_KONAMI_ID is not None:
+        return _LOOKUP_CACHE, _PW_TO_KONAMI_ID
 
     db_path = _get_lookup_db_path()
+    _LOOKUP_CACHE = {}
+    _PW_TO_KONAMI_ID = {}
+
     if os.path.isfile(db_path):
         try:
             with open(db_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
-                    _LOOKUP_CACHE = data.get("by_password", data)
-                    return _LOOKUP_CACHE
+                    _LOOKUP_CACHE = data
+                    for kid_str, info in data.items():
+                        if isinstance(info, dict):
+                            pw = _normalize_password(str(info.get("password", "")))
+                            if pw:
+                                _PW_TO_KONAMI_ID[pw] = int(kid_str)
         except Exception:
             pass
 
-    _LOOKUP_CACHE = {}
-    return _LOOKUP_CACHE
+    return _LOOKUP_CACHE, _PW_TO_KONAMI_ID
 
 
 def _save_lookup_cache() -> None:
@@ -52,8 +59,12 @@ def _save_lookup_cache() -> None:
         return
     db_path = _get_lookup_db_path()
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    sorted_cache = {
+        k: {"name": v.get("name", ""), "password": v.get("password", "")}
+        for k, v in sorted(_LOOKUP_CACHE.items(), key=lambda item: int(item[0]))
+    }
     with open(db_path, "w", encoding="utf-8") as f:
-        json.dump(_LOOKUP_CACHE, f, indent=4, sort_keys=True)
+        json.dump(sorted_cache, f, indent=4, sort_keys=False, ensure_ascii=False)
         f.write("\n")
 
 
@@ -100,7 +111,7 @@ def lookup_konami_id(
         return 0
 
     with _LOOKUP_LOCK:
-        by_pw = _load_lookup_cache()
+        cache, by_pw = _load_lookup_cache()
 
         if norm_pw in by_pw:
             return int(by_pw[norm_pw])
@@ -122,6 +133,13 @@ def lookup_konami_id(
             return 0
 
         resolved_id = int(misc_list[0]["konami_id"])
+        kid_key = str(resolved_id)
+        card_name = str(target.get("name", "")).strip()
+
+        cache[kid_key] = {
+            "name": card_name or cache.get(kid_key, {}).get("name", ""),
+            "password": norm_pw,
+        }
         by_pw[norm_pw] = resolved_id
 
         try:
