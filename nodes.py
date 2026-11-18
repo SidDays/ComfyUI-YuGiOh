@@ -48,7 +48,7 @@ class YuGiOhCardGenerator:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("card_image",)
     FUNCTION = "generate_card"
-    CATEGORY = "Yu-Gi-Oh!"
+    CATEGORY = ""
 
     def generate_card(self, series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override):
         return generate_yugioh_card_image(series, frame, art, attribute, name, level_rank, type, icon, effect, atk_value, def_value, link_rating, link_markers, is_pendulum, pendulum_scale_blue, pendulum_scale_red, pendulum_effect, corner_text, set_id, password, edition, copyright, json_override)
@@ -76,7 +76,7 @@ class YuGiOhPasswordToKonamiId:
     RETURN_TYPES = ("INT",)
     RETURN_NAMES = ("konami_id",)
     FUNCTION = "lookup_id"
-    CATEGORY = "Yu-Gi-Oh!"
+    CATEGORY = ""
 
     def lookup_id(
         self,
@@ -112,7 +112,7 @@ class YuGiOhMasterDuelUnityPath:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("unity_path",)
     FUNCTION = "get_unity_path"
-    CATEGORY = "Yu-Gi-Oh!"
+    CATEGORY = ""
 
     def get_unity_path(self, konami_id: int = None, region: str = "tcg"):
         return (get_card_unity_path(konami_id, region),)
@@ -151,7 +151,7 @@ class YuGiOhMasterDuelAssetPacker:
     RETURN_NAMES = ("saved_bundle_path",)
     FUNCTION = "pack_asset"
     OUTPUT_NODE = True
-    CATEGORY = "Yu-Gi-Oh!"
+    CATEGORY = ""
 
     def pack_asset(
         self,
